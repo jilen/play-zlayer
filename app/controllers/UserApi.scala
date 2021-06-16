@@ -13,10 +13,10 @@ trait UserApi {
 object UserApi {
   val Live = {
     ZLayer.fromServices {
-      (userService: UserService, Action: DefaultActionBuilder) =>
+      (userService: UserService, Action: ZActionBuilder.Default) =>
         new UserApi {
           def login = Action {
-            Results.Ok("success")
+            UIO(Results.Ok("success"))
           }
         }
     }

@@ -6,14 +6,16 @@ import zio._
 
 trait ApiRoutesLayers extends ServiceLayers {
 
-  private def userRoutes(userApi: Has[UserApi]): Router.Routes = {
-    case h if h.path == "/user/login" => userApi.get.login
+  private def userRoutes(userApi: UserApi): Router.Routes = {
+    case h if h.path == "/user/login" => userApi.login
   }
 
-  private final val userApiRoutesLayer: RLayer[PlayEnv, Has[Router.Routes]] = {
-    (userServiceLayer ++ ZLayer.identity[PlayEnv]) >>> UserApi.Live >>> ZLayer.fromFunction(userRoutes)
+  private final val userApiRoutesLayer: RLayer[console.Console with Has[ZActionBuilder.Default], Has[Router.Routes]] = {
+    (userServiceLayer ++ ZLayer.service[ZActionBuilder.Default]) >>> UserApi.Live >>> ZLayer.fromService(userRoutes)
   }
 
-  final val apiRoutesLayer = userApiRoutesLayer.map( out => Seq(out.get[Router.Routes]))
+  final val apiRoutesLayer: RLayer[ZEnv with ZActionEnv, Has[Seq[Router.Routes]]] = userApiRoutesLayer >>> ZLayer.fromService { routes: Router.Routes =>
+    Seq(routes)
+  }
 
 }
