@@ -6,9 +6,11 @@ import play.api.routing.Router
 
 import zio._
 
-object AppLoader extends ApplicationLoader {
+class AppLoader extends ApplicationLoader {
 
-  val loader: AppContext.Loader = ???
+  val loader: AppContext.Loader = {
+    (RouterLayer.routerLayer <&> RouterLayer.filtersLayer)
+  }
 
   def load(context: ApplicationLoader.Context): Application = {
     new AppContext(loader, context, Runtime.default).application
@@ -20,17 +22,20 @@ class AppContext(
     context: ApplicationLoader.Context,
     runtime: Runtime[ZEnv]
 ) extends BuiltInComponentsFromContext(context) {
+  val playRuntime: Runtime[PlayEnv] = runtime.map { zenv =>
+    zenv ++ Has[BuiltInComponents](this) ++ Has(defaultActionBuilder)
+  }
   lazy val (_router, _filters) = {
     val loadComp = for {
-      compRes <- loader.build.provide(this).reserve
+      compRes <- loader.build.reserve
       comp <- compRes.acquire
       _ <- Task.effect {
         applicationLifecycle.addStopHook(() =>
-          runtime.unsafeRunToFuture(compRes.release(Exit.unit))
+          playRuntime.unsafeRunToFuture(compRes.release(Exit.unit))
         )
       }
     } yield comp
-    runtime.unsafeRun(loadComp)
+    playRuntime.unsafeRun(loadComp)
   }
 
   def router = _router
@@ -38,5 +43,5 @@ class AppContext(
 }
 
 object AppContext {
-  type Loader = RLayer[BuiltInComponents, (Router, Seq[EssentialFilter])]
+  type Loader = RLayer[PlayEnv, (Router, Seq[EssentialFilter])]
 }

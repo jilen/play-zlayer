@@ -3,6 +3,7 @@ package models
 case class User(id: Long, name: String, pass: String)
 
 object User {
+
   sealed trait LoginErr extends Err {
     val baseCode = 100
   }
