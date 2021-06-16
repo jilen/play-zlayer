@@ -6,14 +6,20 @@ object User {
 
   sealed trait LoginErr extends Err {
     val baseCode = 100
+    val subCode: Int
+    val msg: String
+    final def code = baseCode * 100 + subCode
   }
 
   object LoginErr {
-    def apply(subCode: Int, _msg: String): LoginErr = {
-      new LoginErr {
-        def code = baseCode * 100 + subCode
-        def msg = _msg
-      }
+
+    object Codes {
+      final val InvalidUserOrPass = 1
+    }
+
+    case object InvalidUserOrPass extends LoginErr {
+      val subCode = Codes.InvalidUserOrPass
+      val msg = "用户名或密码无效"
     }
   }
 }

@@ -6,5 +6,5 @@ import zio._
 
 trait RepoLayers extends DatabaseLayer {
   val userRepoLayer: RLayer[console.Console, Has[UserRepo]] =
-    DatabaseLayer >>> UserRepo.Live
+     (ZLayer.identity[console.Console] >+> DatabaseLayer ) >>> UserRepo.Live
 }

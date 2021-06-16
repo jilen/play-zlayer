@@ -11,15 +11,14 @@ trait UserApi {
 }
 
 object UserApi {
-  val Live: URLayer[PlayEnv with Has[UserService], Has[UserApi]] =
-    ZLayer.fromFunction { env =>
-
-      val Action = env.get[DefaultActionBuilder]
-
-      new UserApi {
-        def login = Action {
-          Results.Ok("success")
+  val Live = {
+    ZLayer.fromServices {
+      (userService: UserService, Action: DefaultActionBuilder) =>
+        new UserApi {
+          def login = Action {
+            Results.Ok("success")
+          }
         }
-      }
     }
+  }
 }
