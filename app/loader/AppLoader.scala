@@ -9,7 +9,7 @@ import zio._
 class AppLoader extends ApplicationLoader {
 
   val loader: AppContext.Loader = {
-    (RouterLayer.routerLayer <&> RouterLayer.filtersLayer)
+    (RouterLayer.routerLayer.map(_.get) <&> RouterLayer.filtersLayer.map(_.get))
   }
 
   def load(context: ApplicationLoader.Context): Application = {

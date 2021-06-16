@@ -5,5 +5,5 @@ import zio._
 
 
 trait ServiceLayers extends RepoLayers {
-  val userServiceLayer: RLayer[PlayEnv, Has[UserService]] = userRepoLayer >>> UserService.Live
+  val userServiceLayer: RLayer[console.Console, Has[UserService]] = userRepoLayer >>> UserService.Live
 }
