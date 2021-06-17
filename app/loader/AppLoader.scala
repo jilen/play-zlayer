@@ -1,9 +1,9 @@
 package loader
 
+import layers._
 import play.api._
 import play.api.mvc._
 import play.api.routing.Router
-
 import zio._
 
 class AppLoader extends ApplicationLoader {

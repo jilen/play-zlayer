@@ -1,4 +1,4 @@
-package loader
+package layers
 
 import controllers._
 import play.api._
@@ -8,14 +8,11 @@ import zio._
 
 object RouterLayer extends ApiRoutesLayers {
 
-  private val routesLayer: RLayer[ZEnv with ZActionEnv, Has[Seq[Router.Routes]]] = apiRoutesLayer
-
   val routerLayer: RLayer[PlayEnv, Has[Router]] = {
-    (ZLayer.identity[PlayEnv] >+> ActionsLayer) >>> routesLayer >>> ZLayer.fromService { routes: Seq[Router.Routes] =>
-      routes.foldLeft(Router.empty) { (router, routes) =>
-        router.orElse(Router.from(routes))
+    (ZLayer.identity[PlayEnv] >+> ActionsLayer) >>> apiRoutesLayer >>> ZLayer
+      .fromService { routes: Router.Routes =>
+        Router.from(routes)
       }
-    }
   }
 
   val filtersLayer: RLayer[PlayEnv, Has[Seq[EssentialFilter]]] = {
