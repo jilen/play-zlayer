@@ -12,7 +12,7 @@ package object layers {
 
   type ZActionEnv = Has[ZActionBuilder.Default]
 
-  type ZAppEnv = ZEnv with ZActionEnv
+  type ZAppEnv = ZEnv & ZActionEnv
 
-  type PlayEnv = ZEnv with Has[BuiltInComponents]
+  type PlayEnv = ZEnv & Has[BuiltInComponents]
 }

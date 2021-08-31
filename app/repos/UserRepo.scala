@@ -9,12 +9,12 @@ trait UserRepo {
 }
 
 object UserRepo {
-  val Live: URLayer[Console with Has[Database], Has[UserRepo]] = {
+  val Live: URLayer[Console & Has[Database], Has[UserRepo]] = {
     repoLive { (cs: Console.Service, db: Database) =>
        new UserRepo {
         def getPass(name: String) = {
           db.getConn.use { conn =>
-            cs.putStrLn(s"get pass with conn: ${conn}")
+            cs.putStrLn(s"get pass & conn: ${conn}")
               .as(Some("fake_pass"))
               .orDie
           }

@@ -9,7 +9,7 @@ trait UserService {
 }
 
 object UserService {
-  val Live: URLayer[Has[UserRepo], Has[UserService]] = ZLayer.fromService {
+  val Live = ZLayer.fromService {
     userRepo: UserRepo =>
       new UserService {
         def login(name: String, pass: String): IO[User.LoginErr, Unit] = {

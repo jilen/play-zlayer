@@ -26,7 +26,7 @@ trait ApiRoutesLayers extends ApiLayers {
   val zActionEnvLayer: RLayer[ZActionEnv, ZActionEnv] =
     ZLayer.identity[ZActionEnv]
 
-  type ZApiEnv = ZEnv with ZActionEnv
+  type ZApiEnv = ZEnv & ZActionEnv
 
   final val apiRoutesLayer = router(Seq(userApiRoutesLayer))
 
