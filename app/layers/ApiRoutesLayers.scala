@@ -3,6 +3,7 @@ package layers
 import controllers._
 import play.api.mvc._
 import play.api.routing.Router
+import play.api.routing.sird._
 import zio._
 
 trait ApiRoutesLayers extends ApiLayers {
@@ -17,8 +18,8 @@ trait ApiRoutesLayers extends ApiLayers {
 
   private final val userApiRoutesLayer: ApiLayer = {
     apiRoutes(userApiLayer) { userApi =>
-      {
-        case h if h.path == "/user/login" => userApi.login
+      { case GET(p"/user/login") =>
+        userApi.login
       }
     }
   }
