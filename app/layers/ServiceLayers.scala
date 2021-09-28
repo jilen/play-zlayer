@@ -6,6 +6,8 @@ import services._
 import zio._
 
 trait ServiceLayers extends RepoLayers {
-  val userServiceLayer: RLayer[ZEnv, Has[UserService]] =
-    userRepoLayer >>> UserService.Live
+  val serviceLayers =
+    repoLayers >>> {
+      UserService.Live ++ OrderService.Live
+    }
 }

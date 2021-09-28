@@ -1,0 +1,2 @@
+GET     /user/login                         controllers.UserApi.login
+GET     /order/getOrders/:userId/:page      controllers.OrderApi.getOrders(userId: Long, page: Int)

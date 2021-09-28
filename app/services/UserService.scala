@@ -9,17 +9,20 @@ trait UserService {
 }
 
 object UserService {
-  val Live = ZLayer.fromService {
-    userRepo: UserRepo =>
-      new UserService {
-        def login(name: String, pass: String): IO[User.LoginErr, Unit] = {
-          userRepo
-            .getPass(name)
-            .filterOrFail(_.exists(p => p == pass))(
-              User.LoginErr.InvalidUserOrPass
-            )
-            .as(())
-        }
+
+  val Live = ZLayer.fromService { userRepo: UserRepo =>
+
+    new UserService {
+
+      def login(name: String, pass: String): IO[User.LoginErr, Unit] = {
+        userRepo
+          .getPass(name)
+          .orDie
+          .filterOrFail(_.exists(p => p == pass))(
+            User.LoginErr.InvalidUserOrPass
+          )
+          .as(())
       }
+    }
   }
 }

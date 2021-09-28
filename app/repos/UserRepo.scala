@@ -5,7 +5,7 @@ import zio._
 import zio.console._
 
 trait UserRepo {
-  def getPass(name: String): UIO[Option[String]]
+  def getPass(name: String): Task[Option[String]]
 }
 
 object UserRepo {
@@ -16,7 +16,6 @@ object UserRepo {
           db.getConn.use { conn =>
             cs.putStrLn(s"get pass & conn: ${conn}")
               .as(Some("fake_pass"))
-              .orDie
           }
         }
       }

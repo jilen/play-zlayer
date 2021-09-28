@@ -11,14 +11,19 @@ trait UserApi {
 }
 
 object UserApi {
-  val Live = {
-    ZLayer.fromServices {
-      (userService: UserService, Action: ZActionBuilder.Default) =>
-        new UserApi {
-          def login = Action {
-            UIO(Results.Ok("success"))
-          }
-        }
+
+  def makeUserApi(
+      userService: UserService,
+      Action: ZActionBuilder.Default
+  ): UserApi = {
+    new UserApi {
+      def login = Action {
+        UIO(Results.Ok("success"))
+      }
     }
+  }
+
+  val Live = {
+    ZLayer.fromServices(makeUserApi)
   }
 }

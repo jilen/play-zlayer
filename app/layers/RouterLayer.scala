@@ -8,11 +8,17 @@ import zio._
 
 object RouterLayer extends ApiRoutesLayers {
 
-  val routerLayer: RLayer[PlayEnv, Has[Router]] = {
-    (ZLayer.identity[PlayEnv] >+> ActionsLayer) >>> apiRoutesLayer >>> ZLayer
-      .fromService { routes: Router.Routes =>
-        Router.from(routes)
-      }
+  val routerLayer: RLayer[PlayEnv, Has[router.Routes]] = {
+    ZLayer.identity[PlayEnv] >>> apiRoutesLayer
+  }
+
+  lazy val apiRoutesLayer = (ZLayer.requires[PlayEnv] >+> ActionsLayer >+> apiLayers).map { env => // might gets automatic construction by macros
+    val routes = new router.Routes(
+      env.get[BuiltInComponents].httpErrorHandler,
+      env.get[UserApi],
+      env.get[OrderApi]
+    )
+    Has(routes)
   }
 
   val filtersLayer: RLayer[PlayEnv, Has[Seq[EssentialFilter]]] = {
