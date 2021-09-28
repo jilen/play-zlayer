@@ -6,7 +6,7 @@ import play.api.routing.Router
 import play.api.mvc._
 import zio._
 
-object RouterLayer extends ApiRoutesLayers {
+object RouterLayer extends ApiLayers {
 
   val routerLayer: RLayer[PlayEnv, Has[router.Routes]] = {
     (ZLayer.requires[PlayEnv] >+> ActionsLayer >+> apiLayers).map { env => // might gets automatic construction by macros
