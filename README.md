@@ -2,7 +2,7 @@
 
 ### Intro
 
-An play! framework managed by `ZLayer`
+A play! framework app managed by `ZLayer`
 
 
 ### How ?
