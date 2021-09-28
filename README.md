@@ -23,10 +23,10 @@ class Routes(
 val controllerLayers = ZLayer[R, XXX, Has[BuiltInComponents] with  Has[XXXControler0] with Has[XXXControler1] ...]
 ```
 
-it could be easily `map` to `Routes` above
+It could be easily `map` to `Routes` above
 
 ```scala
-controllerLayers.map { env =>
+val routesLayer = controllerLayers.map { env =>
   val _routes = Routes(
     env.get[BuiltInComponents].httpErrorHandler,
     env.get[XXXControler0],
@@ -36,3 +36,5 @@ controllerLayers.map { env =>
   Has(_routes)
 }
 ```
+
+And then we can simply run the layer get the `Routes` and feed it to custom `ApplicationLoader` which is intended for compile-tim di.
